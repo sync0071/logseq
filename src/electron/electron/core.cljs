@@ -19,7 +19,7 @@
             ["/electron/utils" :as utils]
             ["electron-context-menu" :as init-context-menu]))
 
-(defonce LSP_SCHEME "lsp")
+(defonce LSP_SCHEME "logseq")
 (defonce LSP_PROTOCOL (str LSP_SCHEME "://"))
 (defonce PLUGIN_URL (str LSP_PROTOCOL "logseq.io/"))
 (defonce STATIC_URL (str LSP_PROTOCOL "logseq.com/"))
@@ -43,7 +43,7 @@
                    :logger logger
                    :win    win})))
 
-(defn setup-interceptor! []
+(defn setup-interceptor! [win]
   (.registerFileProtocol
     protocol "assets"
     (fn [^js request callback]
@@ -66,6 +66,12 @@
             path' (.join path ROOT path')]
 
         (callback #js {:path path'}))))
+
+  (.registerHttpProtocol
+   protocol LSP_SCHEME
+   (fn [^js request callback]
+     ;; placeholder
+     (.loadURL MAIN_WINDOW_ENTRY)))
 
   #(do
      (.unregisterProtocol protocol LSP_SCHEME)

@@ -27,10 +27,13 @@
             [frontend.text :as text]
             [promesa.core :as p]
             [electron.ipc :as ipc]
-            [frontend.extensions.srs :as srs]))
+            [frontend.extensions.srs :as srs]
+            [frontend.fs.sync :as fs-sync]))
 
 ;; TODO: move to events
 (defn- open-repo-url [url]
+  ;; stop previous file-sync-manager
+  (fs-sync/sync-stop)
   (repo-handler/push-if-auto-enabled! (state/get-current-repo))
   (state/set-current-repo! url)
   ;; load config

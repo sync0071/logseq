@@ -31,7 +31,7 @@
     "semver": "7.3.5",
     "update-electron-app": "2.0.1",
     "extract-zip": "2.0.1",
-    "@andelf/rsapi": "0.0.2"
+    "@andelf/rsapi": "0.0.5"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",

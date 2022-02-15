@@ -27,34 +27,7 @@
             [frontend.text :as text]
             [promesa.core :as p]
             [electron.ipc :as ipc]
-            [frontend.extensions.srs :as srs]
             [frontend.fs.sync :as fs-sync]))
-
-;; TODO: move to events
-(defn- open-repo-url [url]
-  ;; stop previous file-sync-manager
-  (fs-sync/sync-stop)
-  (repo-handler/push-if-auto-enabled! (state/get-current-repo))
-  (state/set-current-repo! url)
-  ;; load config
-  (common-handler/reset-config! url nil)
-  (shortcut/refresh!)
-  (when-not (= :draw (state/get-current-route))
-    (route-handler/redirect-to-home!))
-  (when-let [dir-name (config/get-repo-dir url)]
-    (fs/watch-dir! dir-name))
-  (srs/update-cards-due-count!)
-  ;; load persist-vars
-  (persist-var/load-vars))
-
-
-(defn- switch-repo-if-writes-finished?
-  [url]
-  (if (outliner-file/writes-finished?)
-    (open-repo-url url)
-    (notification/show!
-     "Please wait seconds until all changes are saved for the current graph."
-     :warning)))
 
 (rum/defc add-repo
   [args]

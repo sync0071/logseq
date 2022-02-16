@@ -37,7 +37,9 @@
             [frontend.mobile.util :as mobile-util]
             [frontend.encrypt :as encrypt]
             [promesa.core :as p]
-            [frontend.fs :as fs]))
+            [frontend.fs :as fs]
+            [frontend.util.persist-var :as persist-var]
+            [frontend.fs.sync :as sync]))
 
 ;; TODO: should we move all events here?
 
@@ -88,7 +90,12 @@
     (route-handler/redirect-to-home!))
   (when-let [dir-name (config/get-repo-dir graph)]
     (fs/watch-dir! dir-name))
-  (srs/update-cards-due-count!))
+  (srs/update-cards-due-count!)
+  ;; load persist-vars
+  (persist-var/load-vars)
+
+  ;; stop sync
+  (sync/sync-stop))
 
 (defmethod handle :graph/switch [[_ graph]]
   (if (outliner-file/writes-finished?)
